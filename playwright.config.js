@@ -1,5 +1,8 @@
 // @ts-check
 const { defineConfig, devices } = require('@playwright/test');
+const devConfig = require('./config/dev.config');
+const qaConfig = require('./config/qa.config');
+const prodConfig = require('./config/prod.config');
 
 /**
  * Read environment variables from file.
@@ -12,6 +15,16 @@ const { defineConfig, devices } = require('@playwright/test');
 /**
  * @see https://playwright.dev/docs/test-configuration
  */
+
+// Get environment from command line or default to dev
+const env = process.env.ENV || 'dev';
+const configs = {
+    dev: devConfig,
+    qa: qaConfig,
+    prod: prodConfig
+};
+const currentConfig = configs[env];
+
 module.exports = defineConfig({
   testDir: './tests',
   /* Run tests in files in parallel */
@@ -27,12 +40,14 @@ module.exports = defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: 'http://localhost:3000',
+    baseURL: currentConfig.baseUrl,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
+    actionTimeout: currentConfig.timeout,
+    navigationTimeout: currentConfig.timeout,
   },
 
   /* Configure projects for major browsers */

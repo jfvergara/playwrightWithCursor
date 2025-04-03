@@ -1,6 +1,6 @@
 # Playwright Page Object Model Project
 
-This project demonstrates the implementation of Playwright tests using the Page Object Model (POM) design pattern.
+This project demonstrates the implementation of Playwright tests using the Page Object Model (POM) design pattern with support for multiple environments.
 
 ## Project Structure
 
@@ -12,6 +12,10 @@ This project demonstrates the implementation of Playwright tests using the Page 
 │   ├── utils/          # Utility functions
 │   │   └── helpers.js
 │   └── login.spec.js   # Test files
+├── config/             # Environment configurations
+│   ├── dev.config.js   # Development environment
+│   ├── qa.config.js    # QA environment
+│   └── prod.config.js  # Production environment
 ├── playwright-report/  # HTML test reports
 ├── playwright.config.js
 └── package.json
@@ -31,6 +35,7 @@ npx playwright install
 
 ## Running Tests
 
+### Default Environment (Development)
 - Run all tests:
 ```bash
 npm run test
@@ -45,6 +50,39 @@ npm run test:ui
 ```bash
 npm run test:debug
 ```
+
+### Environment-Specific Tests
+
+- Development Environment:
+```bash
+npm run test:dev
+npm run test:ui:dev
+```
+
+- QA Environment:
+```bash
+npm run test:qa
+npm run test:ui:qa
+```
+
+- Production Environment:
+```bash
+npm run test:prod
+npm run test:ui:prod
+```
+
+## Environment Configuration
+
+Each environment has its own configuration file in the `config` directory:
+- `dev.config.js`: Development environment settings
+- `qa.config.js`: QA environment settings
+- `prod.config.js`: Production environment settings
+
+Configuration includes:
+- Base URL
+- API URL
+- Environment name
+- Timeout settings
 
 ## Test Reports
 
@@ -71,15 +109,16 @@ This project uses the Page Object Model design pattern to organize test code. Ea
 
 The project includes a GitHub Actions workflow that:
 1. Runs tests on pull requests and pushes to main/master branch
-2. Generates HTML test reports
-3. Uploads test reports as artifacts (available for 30 days)
+2. Tests all environments (dev, qa, prod) in parallel
+3. Generates HTML test reports for each environment
+4. Uploads test reports as artifacts (available for 30 days)
 
 The workflow is defined in `.github/workflows/playwright.yml` and includes:
 - Node.js setup
 - Dependency installation
 - Playwright browser installation
-- Test execution
-- Report upload
+- Test execution for each environment
+- Report upload for each environment
 
 ## Browser Support
 
