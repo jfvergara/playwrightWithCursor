@@ -107,18 +107,32 @@ This project uses the Page Object Model design pattern to organize test code. Ea
 
 ## GitHub Actions
 
-The project includes a GitHub Actions workflow that:
-1. Runs tests on pull requests and pushes to main/master branch
-2. Tests all environments (dev, qa, prod) in parallel
-3. Generates HTML test reports for each environment
-4. Uploads test reports as artifacts (available for 30 days)
+The project includes a GitHub Actions workflow that implements a sequential test execution strategy:
 
-The workflow is defined in `.github/workflows/playwright.yml` and includes:
+1. Development Environment Tests:
+   - Runs first on every push or pull request
+   - Must pass for QA tests to proceed
+
+2. QA Environment Tests:
+   - Runs only if Development tests pass
+   - Must pass for Production tests to proceed
+
+3. Production Environment Tests:
+   - Runs only if QA tests pass
+   - Final stage of the pipeline
+
+The workflow includes for each environment:
 - Node.js setup
 - Dependency installation
 - Playwright browser installation
-- Test execution for each environment
-- Report upload for each environment
+- Test execution
+- Report upload as artifacts (available for 30 days)
+
+This sequential approach ensures that:
+- QA tests only run if Development tests pass
+- Production tests only run if QA tests pass
+- Each environment's test results are tracked separately
+- Failed tests in earlier environments prevent testing in subsequent environments
 
 ## Browser Support
 
