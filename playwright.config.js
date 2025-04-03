@@ -3,6 +3,7 @@ const { defineConfig, devices } = require('@playwright/test');
 const devConfig = require('./config/dev.config');
 const qaConfig = require('./config/qa.config');
 const prodConfig = require('./config/prod.config');
+const CustomReporter = require('./tests/utils/customReporter');
 
 /**
  * Read environment variables from file.
@@ -16,7 +17,7 @@ const prodConfig = require('./config/prod.config');
  * @see https://playwright.dev/docs/test-configuration
  */
 
-// Get environment from command line or default to dev
+// Get environment from process.env or default to dev
 const env = process.env.ENV || 'dev';
 const configs = {
     dev: devConfig,
@@ -36,7 +37,11 @@ module.exports = defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  reporter: [
+    ['list'],
+    ['html'],
+    [CustomReporter]
+  ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
@@ -48,6 +53,11 @@ module.exports = defineConfig({
     video: 'retain-on-failure',
     actionTimeout: currentConfig.timeout,
     navigationTimeout: currentConfig.timeout,
+    viewport: { width: 1280, height: 720 },
+    ignoreHTTPSErrors: true,
+    launchOptions: {
+      slowMo: process.env.SLOW_MO ? parseInt(process.env.SLOW_MO) : 0,
+    },
   },
 
   /* Configure projects for major browsers */
@@ -68,14 +78,14 @@ module.exports = defineConfig({
     },
 
     /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
-    // },
+    {
+      name: 'Mobile Chrome',
+      use: { ...devices['Pixel 5'] },
+    },
+    {
+      name: 'Mobile Safari',
+      use: { ...devices['iPhone 12'] },
+    },
 
     /* Test against branded browsers. */
     // {
