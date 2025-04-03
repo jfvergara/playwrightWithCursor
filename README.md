@@ -1,6 +1,6 @@
 # Playwright Page Object Model Project
 
-This project demonstrates the implementation of Playwright tests using the Page Object Model (POM) design pattern and Allure Reports for test reporting.
+This project demonstrates the implementation of Playwright tests using the Page Object Model (POM) design pattern.
 
 ## Project Structure
 
@@ -12,8 +12,7 @@ This project demonstrates the implementation of Playwright tests using the Page 
 │   ├── utils/          # Utility functions
 │   │   └── helpers.js
 │   └── login.spec.js   # Test files
-├── allure-results/     # Allure test results
-├── allure-report/      # Generated Allure reports
+├── playwright-report/  # HTML test reports
 ├── playwright.config.js
 └── package.json
 ```
@@ -47,9 +46,9 @@ npm run test:ui
 npm run test:debug
 ```
 
-## Allure Reports
+## Test Reports
 
-This project uses Allure Reports for test reporting. Allure provides detailed test reports with:
+This project uses Playwright's built-in HTML reporter for test reporting. The reports include:
 - Test results and status
 - Screenshots on failure
 - Videos on failure
@@ -57,22 +56,7 @@ This project uses Allure Reports for test reporting. Allure provides detailed te
 - Test duration and timing
 - Environment information
 
-### Working with Allure Reports
-
-1. Generate Allure report:
-```bash
-npm run report:generate
-```
-
-2. Open Allure report in browser:
-```bash
-npm run report:open
-```
-
-3. Clear Allure results and reports:
-```bash
-npm run report:clear
-```
+After running tests, you can find the HTML report in the `playwright-report` directory. Open `index.html` in your browser to view the report.
 
 ## Page Object Model
 
@@ -87,16 +71,15 @@ This project uses the Page Object Model design pattern to organize test code. Ea
 
 The project includes a GitHub Actions workflow that:
 1. Runs tests on pull requests and pushes to main/master branch
-2. Generates Allure reports
-3. Uploads test results and reports as artifacts (available for 30 days)
+2. Generates HTML test reports
+3. Uploads test reports as artifacts (available for 30 days)
 
 The workflow is defined in `.github/workflows/playwright.yml` and includes:
 - Node.js setup
 - Dependency installation
 - Playwright browser installation
 - Test execution
-- Allure report generation
-- Artifact upload
+- Report upload
 
 ## Browser Support
 
