@@ -17,7 +17,7 @@ const CustomReporter = require('./tests/utils/customReporter');
  * @see https://playwright.dev/docs/test-configuration
  */
 
-// Get environment from process.env or default to dev
+// Get environment from command line or default to 'dev'
 const env = process.env.ENV || 'dev';
 const configs = {
     dev: devConfig,
@@ -39,8 +39,8 @@ module.exports = defineConfig({
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
     ['list'],
-    ['html'],
-    [CustomReporter]
+    ['html', { open: 'never' }],
+    ['./tests/utils/customReporter.js']
   ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
@@ -48,7 +48,7 @@ module.exports = defineConfig({
     baseURL: currentConfig.baseUrl,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on-first-retry',
+    trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
     actionTimeout: currentConfig.timeout,
